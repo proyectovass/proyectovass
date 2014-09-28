@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Storage Example</title>
+
+    <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
+    <script type="text/javascript" charset="utf-8">
+
+        // Wait for device API libraries to load
+        //
+        document.addEventListener("deviceready", onDeviceReady, false);
+
+        // Populate the database
+        //
+        function populateDB(tx) {
+        //tx.executeSql('DROP TABLE IF EXISTS DEMO');
+        tx.executeSql('CREATE TABLE IF NOT EXISTS DEMO (id unique, data)');
+        tx.executeSql('INSERT INTO DEMO (id, data) VALUES (1, "First row")');
+        tx.executeSql('INSERT INTO DEMO (id, data) VALUES (2, "Second 1")');
+        tx.executeSql('INSERT INTO DEMO (id, data) VALUES (3, "Second 2row")');
+        tx.executeSql('INSERT INTO DEMO (id, data) VALUES (4, "Second 3row")');
+        tx.executeSql('INSERT INTO DEMO (id, data) VALUES (5, "Second 4row")');
+
+        }
+
+        // Query the database
+        //
+        function queryDB(tx) {
+        tx.executeSql('SELECT * FROM DEMO', [], querySuccess, errorCB);
+        }
+
+        // Query the success callback
+        //
+        function querySuccess(tx, results) {
+        var len = results.rows.length;
+        var html="";
+        console.log("DEMO table: " + len + " rows found.");
+        for (var i=0; i
+        <len
+        ; i++){
+        html += "
+        <div>" + results.rows.item(i).data + "</div>
+        "
+        console.log("Row = " + i + " ID = " + results.rows.item(i).id + " Data = " +
+        results.rows.item(i).data);
+        }
+        document.getElementById("tabla").innerHTML = html;
+        }
+
+        // Transaction error callback
+        //
+        function errorCB(err) {
+        console.log("Error processing SQL: "+err.code);
+        }
+
+        // Transaction success callback
+        //
+        function successCB() {
+        var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
+        db.transaction(queryDB, errorCB);
+        }
+
+        // device APIs are available
+        //
+        function onDeviceReady() {
+        var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
+        db.transaction(populateDB, errorCB, successCB);
+    </script>
+    <script type="text/javascript" charset="utf-8">
+        }
+
+    </script>
+</head>
+<body>
+<h1>Example</h1>
+<p>Database</p>
+<div id="tabla"></div>
+</body>
+</html>
